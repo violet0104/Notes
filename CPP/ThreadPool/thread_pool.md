@@ -93,3 +93,60 @@ std::condition_variable cv_;
 
 1. `cv_.wait()`会使线程进入等待状态，并释放lock锁。
 2. 当其他线程调用`cv_.notify_one()`或`cv_.notify_all()`通知时，等待的线程会被唤醒，重新获取lock锁。然后判断`!running_ || !task_queue_.empty()`，如果为false，重复步骤1；如果为true，则继续执行后续代码，从任务队列中取出任务。
+
+
+
+## 四、代码实现步骤
+
+
+
+### 4.1 构建线程池类
+
+线程池类是整个线程池实现的核心部分，它负责管理线程队列、任务队列以及协调线程的工作。下面是线程池的基本框架：
+
+```c++
+class threadpool
+{
+    using task_t = std::function<void()>;   // 定义任务类型为可调用对象（无参， 无返回值）
+
+public:
+    // 构造函数，初始化线程池
+    explicit threadpool(size_t thread_count  = default_thread_count());
+
+    // 析构函数, 停止所有线程并等待它们完成
+    ~threadpool();
+
+    // 提交任务到线程池
+    template <typename F, typename...Args>
+    auto submit(F &&f, Args &&...args) -> std::future<decltype(f(args...))>;
+
+    /// 阻塞直到所有任务完成
+    void wait_all();
+
+    // 关闭线程池
+    void shutdown(shutdown_mode mode = shutdown_mode::WaitForAllTasks);
+
+    // 重启线程池
+    void reboot(std::size_t thread_count);
+
+private:
+    // 启动线程池
+    void launch_threads(std::size_t thread_count);
+
+private:
+    std::vector<std::thread> workers_;  // 工作线程集合，用于并发执行任务
+    std::queue<task_t> task_queue_;     // 等待执行的任务队列
+    std::condition_variable cv_;        // 条件变量，用于通知工作线程有新的任务到来
+    mutable std::mutex mtx_;            // 主互斥锁，保护任务队列和与其相关的状态（加 mutable 是因为const函数可能也要访问互斥锁）           
+
+    std::atomic<std::size_t> busy_count_{0};    // 正在执行任务的线程数量
+    std::atomic<bool> running_{true};           // 线程池是否处于运行状态
+
+    mutable std::mutex mtx_done_;       // 用于保护完成通知的互斥锁(wait_all 用)
+    std::condition_variable cv_done_;   // 条件变量，用于等待所有任务执行完毕(配合 wait_all 使用)
+};
+}
+
+#endif
+```
+
