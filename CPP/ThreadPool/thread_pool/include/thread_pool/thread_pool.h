@@ -188,7 +188,7 @@ private:
     static std::size_t validate_thread_count(std::size_t count)
     {
         if (count < k_min_thread_count || count > k_max_thread_count)
-        throw std::invalid_argument("invalid thread_count: must be in range [1, 4096]");
+            throw std::invalid_argument("invalid thread_count: must be in range [1, 4096]");
         return count;
     }
 
