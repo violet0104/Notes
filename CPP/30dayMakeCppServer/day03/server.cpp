@@ -56,7 +56,7 @@ int main() {
                 socklen_t clnt_addr_len = sizeof(clnt_addr);
                 bzero(&clnt_addr, sizeof(clnt_addr));
 
-                int clnt_sockfd = accept(sockfd, (sockaddr*)&clnt_addr, &clnt_addr_len);
+                int clnt_sockfd = accept(sockfd, (sockaddr *)&clnt_addr, &clnt_addr_len);
                 errif(clnt_sockfd == -1, "socket accept error");
 
                 printf("new client fd %d! IP: %s Port: %d\n", clnt_sockfd, inet_ntoa(clnt_addr.sin_addr), ntohs(clnt_addr.sin_port));
