@@ -13,12 +13,7 @@ public:
     ~Epoll();
     
     void addFd(int fd, uint32_t op);
-
-    /// @brief 更新Channel对应的 fd 在 epoll 中的注册状态
     void updateChannel(Channel *ch);
-    
     // std::vector<epoll_event> poll(int timeout = -1);
-
-    /// @brief 获取当前有事件发生的Channel
     std::vector<Channel *> poll(int timeout = -1);
 };
