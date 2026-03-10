@@ -3,10 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-
 #include <functional>
 #include <thread>
-
 #include "Acceptor.h"
 #include "Connection.h"
 #include "EventLoop.h"

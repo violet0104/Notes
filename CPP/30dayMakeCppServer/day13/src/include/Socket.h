@@ -3,10 +3,10 @@
 
 class InetAddress;
 class Socket {
- private:
+private:
   int fd;
 
- public:
+public:
   Socket();
   explicit Socket(int);
   ~Socket();
@@ -21,4 +21,4 @@ class Socket {
   int getFd();
 };
 
-#endif  // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_SOCKET_H_
+#endif // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_SOCKET_H_

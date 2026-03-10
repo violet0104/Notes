@@ -2,10 +2,10 @@
 #include <string>
 
 class Buffer {
- private:
+private:
   std::string buf;
 
- public:
+public:
   Buffer();
   ~Buffer();
 

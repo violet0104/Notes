@@ -4,11 +4,11 @@
 class Epoll;
 class Channel;
 class EventLoop {
- private:
+private:
   Epoll *ep;
   bool quit;
 
- public:
+public:
   EventLoop();
   ~EventLoop();
 

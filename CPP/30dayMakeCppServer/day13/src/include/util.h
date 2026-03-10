@@ -3,4 +3,4 @@
 
 void errif(bool, const char *);
 
-#endif  // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_UTIL_H_
+#endif // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_UTIL_H_

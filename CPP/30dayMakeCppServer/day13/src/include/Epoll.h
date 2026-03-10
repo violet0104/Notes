@@ -8,11 +8,11 @@
 
 class Channel;
 class Epoll {
- private:
+private:
   int epfd;
   struct epoll_event *events;
 
- public:
+public:
   Epoll();
   ~Epoll();
 
@@ -22,5 +22,4 @@ class Epoll {
   std::vector<Channel *> poll(int timeout = -1);
 };
 
-#endif  // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_EPOLL_H_
-
+#endif // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_EPOLL_H_

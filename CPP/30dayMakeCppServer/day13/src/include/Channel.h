@@ -1,19 +1,19 @@
 #pragma once
-#include <sys/epoll.h>
 #include <functional>
+#include <sys/epoll.h>
 
 class EventLoop;
 class Channel {
- private:
+private:
   EventLoop *loop;
   int fd;
-  uint32_t events;  // 期望监听的事件：用户希望在这个文件描述符上监听哪些事件
-  uint32_t ready;   // 实际就绪的事件：内核返回的真正发生了的事件
+  uint32_t events; // 期望监听的事件：用户希望在这个文件描述符上监听哪些事件
+  uint32_t ready; // 实际就绪的事件：内核返回的真正发生了的事件
   bool inEpoll;
   std::function<void()> readCallback;
   std::function<void()> writeCallback;
 
- public:
+public:
   Channel(EventLoop *_loop, int _fd);
   ~Channel();
 

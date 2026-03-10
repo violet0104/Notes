@@ -5,13 +5,13 @@ class EventLoop;
 class Socket;
 class Channel;
 class Acceptor {
- private:
+private:
   EventLoop *loop;
   Socket *sock;
   Channel *acceptChannel;
   std::function<void(Socket *)> newConnectionCallback;
 
- public:
+public:
   explicit Acceptor(EventLoop *_loop);
   ~Acceptor();
 

@@ -4,7 +4,7 @@
 #include <arpa/inet.h>
 
 class InetAddress {
- public:
+public:
   struct sockaddr_in addr;
   socklen_t addr_len;
   InetAddress();
@@ -16,4 +16,4 @@ class InetAddress {
   socklen_t getAddr_len();
 };
 
-#endif  // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_INETADDRESS_H_
+#endif // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_INETADDRESS_H_

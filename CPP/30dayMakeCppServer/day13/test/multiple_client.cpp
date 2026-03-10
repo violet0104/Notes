@@ -31,14 +31,14 @@ void OneClient(int msgs, int wait) {
       break;
     }
     int already_read = 0;
-    char buf[1024];  // 这个buf大小无所谓
+    char buf[1024]; // 这个buf大小无所谓
     while (true) {
       memset(&buf, 0, sizeof(buf));
       ssize_t read_bytes = read(sockfd, buf, sizeof(buf));
       if (read_bytes > 0) {
         read_buffer->append(buf, read_bytes);
         already_read += read_bytes;
-      } else if (read_bytes == 0) {  // EOF
+      } else if (read_bytes == 0) { // EOF
         printf("server disconnected!\n");
         exit(EXIT_SUCCESS);
       }
@@ -90,4 +90,3 @@ int main(int argc, char *argv[]) {
   delete poll;
   return 0;
 }
-

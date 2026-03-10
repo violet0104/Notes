@@ -7,7 +7,7 @@ class Socket;
 class Channel;
 class Buffer;
 class Connection {
- private:
+private:
   EventLoop *loop;
   Socket *sock;
   Channel *channel;
@@ -15,7 +15,7 @@ class Connection {
   std::string *inBuffer;
   Buffer *readBuffer;
 
- public:
+public:
   Connection(EventLoop *_loop, Socket *_sock);
   ~Connection();
 

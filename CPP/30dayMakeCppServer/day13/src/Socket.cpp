@@ -1,11 +1,10 @@
 #include "Socket.h"
-#include <fcntl.h>
-#include <cstring>
-#include <sys/socket.h>
-#include <unistd.h>
-
 #include "InetAddress.h"
 #include "util.h"
+#include <cstring>
+#include <fcntl.h>
+#include <sys/socket.h>
+#include <unistd.h>
 
 Socket::Socket() : fd(-1) {
   fd = socket(AF_INET, SOCK_STREAM, 0);
