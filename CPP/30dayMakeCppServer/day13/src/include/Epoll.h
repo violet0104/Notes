@@ -1,6 +1,4 @@
-#ifndef CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_EPOLL_H_
-#define CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_EPOLL_H_
-
+#pragma once
 #include <sys/epoll.h>
 #include <vector>
 
@@ -21,5 +19,3 @@ public:
 
   std::vector<Channel *> poll(int timeout = -1);
 };
-
-#endif // CPP_30DAYMAKECPPSERVER_DAY13_SRC_INCLUDE_EPOLL_H_

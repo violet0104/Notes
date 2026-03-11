@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 4.1)
+project(CALC)
+
+file(GLOB SRC ${PROJECT_SOURCE_DIR}/*.cpp)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+# set(LIBRARY_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/lib)
+# add_library(calc SHARED ${SRC})
+# add_library(calc STATIC ${SRC})
+link_directories(${PROJECT_SOURCE_DIR}/lib1)
+link_libraries(calc)
+add_executable(app ${SRC})
