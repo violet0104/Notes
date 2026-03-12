@@ -1,24 +1,28 @@
 #include "EventLoop.h"
-#include "Channel.h"
-#include "Epoll.h"
+
 #include <vector>
 
-EventLoop::EventLoop() {
-  epoll_ = new Epoll(); 
-}
+#include "Channel.h"
+#include "Poller.h"
+
+EventLoop::EventLoop() { poller_ = new Poller(); }
 
 EventLoop::~EventLoop() {
-  delete epoll_; 
+  Quit();
+  delete poller_;
 }
 
 void EventLoop::Loop() {
   while (!quit_) {
     std::vector<Channel *> chs;
-    chs = epoll_->Poll();
+    chs = poller_->Poll();
     for (auto &ch : chs) {
       ch->HandleEvent();
     }
   }
 }
 
-void EventLoop::UpdateChannel(Channel *ch) { epoll_->UpdateChannel(ch); }
+void EventLoop::Quit() { quit_ = true; }
+
+void EventLoop::UpdateChannel(Channel *ch) { poller_->UpdateChannel(ch); }
+void EventLoop::DeleteChannel(Channel *ch) { poller_->DeleteChannel(ch); }

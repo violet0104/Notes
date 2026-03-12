@@ -14,7 +14,7 @@
 
 Connection::Connection(EventLoop *loop, Socket *sock) : loop_(loop), sock_(sock) {
   if (loop_ != nullptr) {
-    channel_ = new Channel(loop_, sock->GetFd());
+    channel_ = new Channel(loop_, sock_);
     channel_->EnableRead();
     channel_->UseET();
   }
@@ -52,51 +52,6 @@ void Connection::Write() {
   send_buffer_->Clear();
 }
 
-void Connection::SetDeleteConnectionCallback(std::function<void(Socket *)> const &fn) {
-  delete_connection_callback_ = fn;
-}
-
-void Connection::SetOnConnectCallback(std::function<void(Connection *)> const &fn) {
-  on_connect_callback_ = fn;
-  channel_->SetReadCallback([this]() {on_connect_callback_(this);});
-} 
-
-Connection::State Connection::GetState() {
-  return state_;
-}
-
-void Connection::Close() {
-  delete_connection_callback_(sock_);
-}
-
-void Connection::SetSendBuffer(const char *str) {
-  send_buffer_->SetBuf(str);
-}
-
-Buffer* Connection::GetSendBuffer() {
-  return send_buffer_;
-}
-
-Buffer* Connection::GetReadBuffer() {
-  return read_buffer_;
-}
-
-const char* Connection::SendBuffer() {
-  return send_buffer_->ToStr();
-}
-
-const char* Connection::ReadBuffer() {
-  return read_buffer_->ToStr();
-}
-
-void Connection::GetlineSendBuffer() {
-  send_buffer_->Getline();
-}
-
-Socket* Connection::GetSocket() {
-  return sock_;
-}
-
 void Connection::ReadNonBlocking() {
   int sockfd = sock_->GetFd();
   char buf[1024];  // 这个buf大小无所谓
@@ -115,10 +70,12 @@ void Connection::ReadNonBlocking() {
     } else if (read_bytes == 0) {  // EOF，客户端断开连接
       printf("EOF, client fd %d disconnected\n", sockfd);
       state_ = State::Closed;
+      Close();
       break;
     } else {
       printf("Other error on client fd %d\n", sockfd);
       state_ = State::Closed;
+      Close();
       break;
     }
   }
@@ -175,5 +132,43 @@ void Connection::WriteBlocking() {
   if (bytes_write == -1) {
     printf("Other error on blocking client fd %d\n", sockfd);
     state_ = State::Closed;
+    Close();
   }
 }
+
+void Connection::Send(std::string msg) {
+  SetSendBuffer(msg.c_str());
+  Write();
+}
+
+void Connection::Business() {
+  Read();
+  on_message_callback_(this);
+}
+
+void Connection::SetDeleteConnectionCallback(std::function<void(Socket *)> const &callback) {
+  delete_connection_callback_ = callback;
+}
+
+void Connection::SetOnConnectCallback(std::function<void(Connection *)> const &callback) {
+  on_connect_callback_ = callback;
+}
+
+void Connection::SetOnMessageCallback(std::function<void(Connection *)> const &callback) {
+  on_message_callback_ = callback;
+  std::function<void()> bus = std::bind(&Connection::Business, this);
+  channel_->SetReadCallback(bus);
+}
+
+void Connection::Close() {
+  delete_connection_callback_(sock_);
+}
+
+Connection::State Connection::GetState() { return state_; }
+void Connection::SetSendBuffer(const char *str) { send_buffer_->SetBuf(str); }
+Buffer *Connection::GetReadBuffer() { return read_buffer_; }
+const char *Connection::ReadBuffer() { return read_buffer_->ToStr(); }
+Buffer *Connection::GetSendBuffer() { return send_buffer_; }
+const char *Connection::SendBuffer() { return send_buffer_->ToStr(); }
+void Connection::GetlineSendBuffer() { send_buffer_->Getline(); }
+Socket* Connection::GetSocket() { return sock_; }

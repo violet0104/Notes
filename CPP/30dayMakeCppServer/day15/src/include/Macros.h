@@ -1,7 +1,6 @@
 #pragma once
 #include <cassert>
 #include <stdexcept>
-#define OS_LINUX
 
 // Macros to disable copying and moving
 #define DISALLOW_COPY(cname)                             \

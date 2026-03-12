@@ -2,6 +2,7 @@
 #include <map>
 #include <vector>
 #include <functional>
+
 #include "Macros.h"
 
 class EventLoop;
@@ -16,8 +17,9 @@ private:
   Acceptor *acceptor_;                      // 连接接受器
   std::map<int, Connection *> connections_; // TCP连接
   ThreadPool *thread_pool_;                      // 线程池
-  std::function<void(Connection *)> on_connec_callback_;
-
+  std::function<void(Connection *)> new_connect_callback_;
+  std::function<void(Connection *)> on_connect_callback_;
+  std::function<void(Connection *)> on_message_callback_;
 public:
   explicit Server(EventLoop *);
   ~Server();
@@ -29,7 +31,8 @@ public:
 
   /// @brief 连接关闭回调
   void DeleteConnection(Socket *sock);
-
-  /// @brief 用户自定义业务逻辑
+  
+  void NewConnect(std::function<void(Connection *)> fn);
   void OnConnect(std::function<void(Connection *)> fn);
+  void OnMessage(std::function<void(Connection *)> fn);
 };

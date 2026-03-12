@@ -1,7 +1,6 @@
-#include <iostream>
-
-#include "Socket.h"
 #include "Connection.h"
+#include "Socket.h"
+#include <iostream>
 
 int main() {
   Socket *sock = new Socket();
@@ -13,13 +12,13 @@ int main() {
     conn->GetlineSendBuffer();
     conn->Write();
     if (conn->GetState() == Connection::State::Closed) {
-      conn->Close();
-      break;
+        conn->Close();
+        break;
     }
     conn->Read();
     std::cout << "Message from server: " << conn->ReadBuffer() << std::endl;
   }
-  
+
   delete conn;
   return 0;
 }

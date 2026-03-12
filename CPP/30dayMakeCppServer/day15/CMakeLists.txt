@@ -4,6 +4,9 @@ set(BUILD_SHARED_LIBS ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# 默认为Linux
+set(CMAKE_SYSTEM_NAME Linux)
+
 project(Pine
         VERSION 0.1
         DESCRIPTION "pine"
@@ -49,7 +52,7 @@ endif ()
 if (NOT DEFINED CLANG_TIDY_BIN)
     # attempt to find the binary if user did not specify
     find_program(CLANG_TIDY_BIN
-            NAMES clang-tidy clang-tidy-8
+            NAMES clang-tidy clang-fidy-8
             HINTS ${PINE_CLANG_SEARCH_PATH})
 endif ()
 if ("${CLANG_TIDY_BIN}" STREQUAL "CLANG_TIDY_BIN-NOTFOUND")
@@ -57,7 +60,7 @@ if ("${CLANG_TIDY_BIN}" STREQUAL "CLANG_TIDY_BIN-NOTFOUND")
 else ()
     # Output compile_commands.json
     set(CMAKE_EXPORT_COMPILE_COMMANDS 1)
-    message(STATUS "Pine/main found clang-tidy at ${CLANG_TIDY_BIN}")
+    message(STATUS "Pine/main found clang-fidy at ${CLANG_TIDY_BIN}")
 endif ()
 
 # cpplint
@@ -73,11 +76,20 @@ endif ()
 ######################################################################################################################
 # COMPILER SETUP
 ######################################################################################################################
+# OS
+if (CMAKE_SYSTEM_NAME MATCHES "Darwin")
+    message(STATUS "Platform: macOS")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOS_MACOS")
+elseif (CMAKE_SYSTEM_NAME MATCHES "Linux")
+    message(STATUS "Platform: Linux")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOS_LINUX")
+endif()
 
 # Compiler flags.
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -Wall -Wextra -std=c++17 -pthread")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-parameter -Wno-attributes") #TODO: remove
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls")
+# cmake -DCMAKE_BUILD_TYPE=DEBUG ..
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -O0 -ggdb -fno-omit-frame-pointer -fno-optimize-sibling-calls")
 set(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -fPIC")
 set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -fPIC")
 set(CMAKE_STATIC_LINKER_FLAGS "${CMAKE_STATIC_LINKER_FLAGS} -fPIC")
@@ -149,7 +161,7 @@ add_custom_target(cpplint echo '${PINE_LINT_FILES}' | xargs -n12 -P8
         ${CPPLINT_BIN}
         --verbose=2 --quiet
         --linelength=120
-        --filter=-legal/copyright,-build/include_subdir,-readability/casting,-build/c++11
+        --filter=-legal/copyright,-build/include_subdir,-readability/casting
         )
 
 ###########################################################

@@ -21,5 +21,5 @@ class Acceptor {
   EventLoop *loop_;
   Socket *sock_;
   Channel *channel_;
-  std::function<void(Socket *)> new_connect_callback_;
+  std::function<void(Socket *)> new_connection_callback_;
 };
