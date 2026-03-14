@@ -63,6 +63,10 @@ RC Socket::Create() {
   return RC_SUCCESS;
 }
 
+RC Socket::Bind(const char *ip, uint16_t port) const {
+  
+}
+
 int Socket::Accept(InetAddress *addr) {
   // for server socket
   int clnt_sockfd = -1;
