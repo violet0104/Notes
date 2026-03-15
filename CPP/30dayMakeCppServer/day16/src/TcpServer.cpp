@@ -3,17 +3,21 @@
 #include "Connection.h"
 #include "EventLoop.h"
 #include "ThreadPool.h"
+#include <cassert>
+#include <functional>
+#include <memory>
 
 TcpServer::TcpServer() {
   main_reactor_ = std::make_unique<EventLoop>();
   acceptor_ = std::make_unique<Acceptor>(main_reactor_.get());
-  std::function<void(int)> cb = std::bind(&TcpServer::NewConnection, this, std::placeholders::_1);
+  std::function<void(int)> cb =
+      std::bind(&TcpServer::NewConnection, this, std::placeholders::_1);
   acceptor_->set_new_connection_callback(cb);
 
   unsigned int size = std::thread::hardware_concurrency();
   thread_pool_ = std::make_unique<ThreadPool>(size);
 
-  for (ssize_t i = 0; i < size; ++i) {
+  for (size_t i = 0; i < size; ++i) {
     std::unique_ptr<EventLoop> sub_reactor = std::make_unique<EventLoop>();
     sub_reactors_.push_back(std::move(sub_reactor));
   }
@@ -22,8 +26,9 @@ TcpServer::TcpServer() {
 TcpServer::~TcpServer() {}
 
 void TcpServer::Start() {
-  for (ssize_t i = 0; i < sub_reactors_.size(); ++i) {
-    std::function<void()> sub_loop = std::bind(EventLoop::Loop, sub_reactors_[i].get());
+  for (size_t i = 0; i < sub_reactors_.size(); ++i) {
+    std::function<void()> sub_loop =
+        std::bind(&EventLoop::Loop, sub_reactors_[i].get());
     thread_pool_->Add(std::move(sub_loop));
   }
   main_reactor_->Loop();
@@ -33,11 +38,13 @@ RC TcpServer::NewConnection(int fd) {
   assert(fd != -1);
   uint64_t random = fd % sub_reactors_.size();
 
-  std::unique_ptr<Connection> conn = std::make_unique<Connection>(fd, sub_reactors_[random].get());
-  std::function<void(int)> cb = std::bind(&TcpServer::DeleteConnection, this, std::placeholders::_1);
-  
-  conn->set_delete_connection(cb);
-  conn->set_on_recv(on_recv_);
+  std::unique_ptr<Connection> conn =
+      std::make_unique<Connection>(fd, sub_reactors_[random].get());
+  std::function<void(int)> cb =
+      std::bind(&TcpServer::DeleteConnection, this, std::placeholders::_1);
+
+  conn->SetDeleteConnectionCallback(cb);
+  conn->SetOnRecvCallback(on_recv_);
 
   connections_[fd] = std::move(conn);
   if (on_connect_) {
@@ -48,11 +55,15 @@ RC TcpServer::NewConnection(int fd) {
 
 RC TcpServer::DeleteConnection(int fd) {
   auto it = connections_.find(fd);
-  assert( it != connections_.end() );
+  assert(it != connections_.end());
   connections_.erase(fd);
   return RC_SUCCESS;
 }
 
-void TcpServer::onConnect(std::function<void(Connection *)> fn) { on_connect_ = std::move(fn); }
+void TcpServer::onConnect(std::function<void(Connection *)> fn) {
+  on_connect_ = std::move(fn);
+}
 
-void TcpServer::onRecv(std::function<void(Connection *)> fn) { on_recv_ = std::move(fn); }
+void TcpServer::onRecv(std::function<void(Connection *)> fn) {
+  on_recv_ = std::move(fn);
+}

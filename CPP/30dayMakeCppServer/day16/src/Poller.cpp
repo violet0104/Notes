@@ -60,16 +60,19 @@ void Poller::UpdateChannel(Channel *ch) {
     ev.events |= EPOLLET;
   }
   if (!ch->GetExist()) {
-    ErrorIf(epoll_ctl(fd_, EPOLL_CTL_ADD, sockfd, &ev) == -1, "epoll add error");
+    ErrorIf(epoll_ctl(fd_, EPOLL_CTL_ADD, sockfd, &ev) == -1,
+            "epoll add error");
     ch->SetExist();
   } else {
-    ErrorIf(epoll_ctl(fd_, EPOLL_CTL_MOD, sockfd, &ev) == -1, "epoll modify error");
+    ErrorIf(epoll_ctl(fd_, EPOLL_CTL_MOD, sockfd, &ev) == -1,
+            "epoll modify error");
   }
 }
 
 void Poller::DeleteChannel(Channel *ch) {
   int sockfd = ch->GetSocket()->GetFd();
-  ErrorIf(epoll_ctl(fd_, EPOLL_CTL_DEL, sockfd, nullptr) == -1, "epoll delete error");
+  ErrorIf(epoll_ctl(fd_, EPOLL_CTL_DEL, sockfd, nullptr) == -1,
+          "epoll delete error");
   ch->SetExist(false);
 }
 

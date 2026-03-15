@@ -1,11 +1,10 @@
 #pragma once
 #include <functional>
-#include "Macros.h"
 
 class Poller;
 class Channel;
 class EventLoop {
- public:
+public:
   EventLoop();
   ~EventLoop();
 
@@ -16,7 +15,7 @@ class EventLoop {
   void DeleteChannel(Channel *ch);
   void Quit();
 
- private:
+private:
   Poller *poller_{nullptr};
   bool quit_{false};
 };

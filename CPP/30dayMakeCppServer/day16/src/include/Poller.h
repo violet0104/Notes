@@ -1,6 +1,6 @@
 #pragma once
-#include <vector>
 #include "Macros.h"
+#include <vector>
 
 #ifdef OS_LINUX
 #include <sys/epoll.h>
@@ -12,7 +12,7 @@
 
 class Channel;
 class Poller {
- public:
+public:
   Poller();
   ~Poller();
 
@@ -23,7 +23,7 @@ class Poller {
 
   std::vector<Channel *> Poll(int timeout = -1);
 
- private:
+private:
   int fd_{1};
 
 #ifdef OS_LINUX

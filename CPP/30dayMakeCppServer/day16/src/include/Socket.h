@@ -1,15 +1,16 @@
 #pragma once
-#include <string>
 #include "common.h"
+#include <cstdint>
+#include <string>
 
 class Socket {
- public:
+public:
   DISALLOW_COPY_AND_MOVE(Socket);
   Socket();
   ~Socket();
-  void set_fd(int fd);
-  int get_fd() const;
-  std::string get_addr() const;
+  void SetFd(int fd);
+  int GetFd() const;
+  std::string GetAddr() const;
   RC Create();
   RC Bind(const char *ip, uint16_t port) const;
   RC Listen() const;
@@ -19,6 +20,6 @@ class Socket {
   bool IsNonBlocking() const;
   size_t RecvBufSize() const;
 
- private:
+private:
   int fd_;
 };

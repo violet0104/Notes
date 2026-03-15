@@ -10,7 +10,8 @@ ThreadPool::ThreadPool(unsigned int size) {
           std::unique_lock<std::mutex> lock(queue_mutex_);
 
           // 等待条件变量：阻塞当前线程，直到 线程池停止 或 任务队列不为空
-          condition_variable_.wait(lock, [this]() { return stop_ || !tasks_.empty(); });
+          condition_variable_.wait(
+              lock, [this]() { return stop_ || !tasks_.empty(); });
 
           // 如果 线程池停止 且 任务队列为空，退出线程
           if (stop_ && tasks_.empty())

@@ -1,5 +1,4 @@
 #pragma once
-#include "Macros.h"
 #include <condition_variable>
 #include <functional>
 #include <future>
@@ -12,7 +11,7 @@
 #include <vector>
 
 class ThreadPool {
- public:
+public:
   /// @brief 创建工作线程
   explicit ThreadPool(unsigned int size = std::thread::hardware_concurrency());
   ~ThreadPool();
@@ -21,15 +20,16 @@ class ThreadPool {
 
   // void add(std::function<void()>);
   template <class F, class... Args>
-  auto Add(F &&f, Args &&...args)
-      -> std::future<std::invoke_result_t<F, Args...>>; // 返回值后置：推导任务返回值并封装为
-         
- private:
+  auto Add(F &&f, Args &&...args) -> std::future<
+      std::invoke_result_t<F, Args...>>; // 返回值后置：推导任务返回值并封装为
+
+private:
   std::vector<std::thread> workers_;        // 工作线程
   std::queue<std::function<void()>> tasks_; // 任务队列
   std::mutex queue_mutex_; // 互斥锁：用于线程互斥访问任务的队列
-  std::condition_variable condition_variable_; // 条件变量：实现工作线程的阻塞和唤醒
-  std::atomic<bool> stop_{false};  // 线程停止标志                                               // future
+  std::condition_variable
+      condition_variable_;        // 条件变量：实现工作线程的阻塞和唤醒
+  std::atomic<bool> stop_{false}; // 线程停止标志 // future
 };
 
 // 不能放在cpp文件，原因是C++编译器不支持模版的分离编译

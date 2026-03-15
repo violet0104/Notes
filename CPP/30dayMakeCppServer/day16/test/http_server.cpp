@@ -1,5 +1,5 @@
-#include <iostream>
 #include "pine.h"
+#include <iostream>
 
 int main() {
   EventLoop *loop = new EventLoop();
@@ -11,8 +11,6 @@ int main() {
     std::cout << "\nServer exit!" << std::endl;
     exit(0);
   });
-
-
 
   server->OnMessage([](Connection *conn) {
     std::cout << "Message from client " << conn->ReadBuffer() << std::endl;

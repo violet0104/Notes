@@ -1,12 +1,10 @@
 #pragma once
-#include <signal.h>
 #include <functional>
 #include <map>
+#include <signal.h>
 
 std::map<int, std::function<void()>> handlers_;
-void signal_handler(int sig) {
-  handlers_[sig]();
-}
+void signal_handler(int sig) { handlers_[sig](); }
 
 struct Signal {
   static void signal(int sig, const std::function<void()> &handler) {

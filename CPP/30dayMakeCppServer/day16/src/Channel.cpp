@@ -1,7 +1,6 @@
 #include "Channel.h"
 
 #include <unistd.h>
-#include <utility>
 
 #include "EventLoop.h"
 #include "Socket.h"
@@ -10,11 +9,10 @@ const int Channel::READ_EVENT = 1;
 const int Channel::WRITE_EVENT = 2;
 const int Channel::ET = 4;
 
-Channel::Channel(EventLoop *loop, Socket *socket) : loop_(loop), socket_(socket) {}
+Channel::Channel(EventLoop *loop, Socket *socket)
+    : loop_(loop), socket_(socket) {}
 
-Channel::~Channel() { 
-  loop_->DeleteChannel(this); 
-}
+Channel::~Channel() { loop_->DeleteChannel(this); }
 
 void Channel::HandleEvent() {
   // 处理读事件
@@ -62,5 +60,9 @@ void Channel::SetReadyEvents(int ev) {
     ready_events_ |= ET;
   }
 }
-void Channel::SetReadCallback(std::function<void()> const &callback) { read_callback_ = callback; }
-void Channel::SetWriteCallback(std::function<void()> const &callback) { write_callback_ = callback; }
+void Channel::SetReadCallback(std::function<void()> const &callback) {
+  read_callback_ = callback;
+}
+void Channel::SetWriteCallback(std::function<void()> const &callback) {
+  write_callback_ = callback;
+}

@@ -1,9 +1,8 @@
 #pragma once
 #include <string>
-#include "Macros.h"
 
 class Buffer {
- public:
+public:
   Buffer() = default;
   ~Buffer() = default;
 
@@ -24,6 +23,6 @@ class Buffer {
 
   void SetBuf(const char *);
 
- private:
+private:
   std::string buf_;
 };

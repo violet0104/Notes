@@ -1,5 +1,5 @@
-#include <unistd.h>
 #include <cstring>
+#include <unistd.h>
 
 #include <functional>
 #include <iostream>
@@ -27,7 +27,8 @@ void OneClient(int msgs, int wait) {
       break;
     }
     count++;
-    // std::cout << "msg count " << count++ << ": " << conn->ReadBuffer() << std::endl;
+    // std::cout << "msg count " << count++ << ": " << conn->ReadBuffer() <<
+    // std::endl;
   }
   delete conn;
 }
@@ -40,29 +41,29 @@ int main(int argc, char *argv[]) {
   const char *optstring = "t:m:w:";
   while ((o = getopt(argc, argv, optstring)) != -1) {
     switch (o) {
-      case 't':
-        threads = std::stoi(optarg);
-        break;
-      case 'm':
-        msgs = std::stoi(optarg);
-        break;
-      case 'w':
-        wait = std::stoi(optarg);
-        break;
-      case '?':
-        printf("error optopt: %c\n", optopt);
-        printf("error opterr: %d\n", opterr);
-        break;
-      default:
-        break;
+    case 't':
+      threads = std::stoi(optarg);
+      break;
+    case 'm':
+      msgs = std::stoi(optarg);
+      break;
+    case 'w':
+      wait = std::stoi(optarg);
+      break;
+    case '?':
+      printf("error optopt: %c\n", optopt);
+      printf("error opterr: %d\n", opterr);
+      break;
+    default:
+      break;
     }
   }
 
-    ThreadPool *poll = new ThreadPool(threads);
-    std::function<void()> func = std::bind(OneClient, msgs, wait);
-    for (int i = 0; i < threads; ++i) {
-        poll->Add(func);
-    }
-    delete poll;
-    return 0;
+  ThreadPool *poll = new ThreadPool(threads);
+  std::function<void()> func = std::bind(OneClient, msgs, wait);
+  for (int i = 0; i < threads; ++i) {
+    poll->Add(func);
+  }
+  delete poll;
+  return 0;
 }
