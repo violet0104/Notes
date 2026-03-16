@@ -1,18 +1,15 @@
-#include <cstring>
-#include <unistd.h>
-
-#include <functional>
+#include "pine.h"
 #include <iostream>
-
-#include "Connection.h"
-#include "Socket.h"
-#include "ThreadPool.h"
+#include <unistd.h>
 
 void OneClient(int msgs, int wait) {
   Socket *sock = new Socket();
+  sock->Create();
   sock->Connect("127.0.0.1", 1234);
-  Connection *conn = new Connection(nullptr, sock);
+
+  Connection *conn = new Connection(sock->GetFd(), nullptr);
   sleep(wait);
+
   int count = 0;
   while (count < msgs) {
     conn->SetSendBuffer("I'm client!");
@@ -22,14 +19,10 @@ void OneClient(int msgs, int wait) {
       break;
     }
     conn->Read();
-    if (conn->GetState() == Connection::State::Closed) {
-      conn->Close();
-      break;
-    }
-    count++;
-    // std::cout << "msg count " << count++ << ": " << conn->ReadBuffer() <<
-    // std::endl;
+    std::cout << "msg count " << count++ << ": "
+              << conn->GetReadBuffer()->ToStr() << std::endl;
   }
+  delete sock;
   delete conn;
 }
 
@@ -64,6 +57,7 @@ int main(int argc, char *argv[]) {
   for (int i = 0; i < threads; ++i) {
     poll->Add(func);
   }
+
   delete poll;
   return 0;
 }

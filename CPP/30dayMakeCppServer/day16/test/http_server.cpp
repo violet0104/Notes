@@ -2,23 +2,23 @@
 #include <iostream>
 
 int main() {
-  EventLoop *loop = new EventLoop();
-  Server *server = new Server(loop);
+  // EventLoop *loop = new EventLoop();
+  // Server *server = new Server(loop);
 
-  Signal::signal(SIGINT, [&] {
-    delete server;
-    delete loop;
-    std::cout << "\nServer exit!" << std::endl;
-    exit(0);
-  });
+  // Signal::signal(SIGINT, [&] {
+  //   delete server;
+  //   delete loop;
+  //   std::cout << "\nServer exit!" << std::endl;
+  //   exit(0);
+  // });
 
-  server->OnMessage([](Connection *conn) {
-    std::cout << "Message from client " << conn->ReadBuffer() << std::endl;
-    if (conn->GetState() == Connection::State::Connected) {
-      conn->Send(conn->ReadBuffer());
-    }
-  });
+  // server->OnMessage([](Connection *conn) {
+  //   std::cout << "Message from client " << conn->ReadBuffer() << std::endl;
+  //   if (conn->GetState() == Connection::State::Connected) {
+  //     conn->Send(conn->ReadBuffer());
+  //   }
+  // });
 
-  loop->Loop();
+  // loop->Loop();
   return 0;
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "Macros.h"
+#include "common.h"
 #include <vector>
 
 #ifdef OS_LINUX
@@ -18,13 +18,13 @@ public:
 
   DISALLOW_COPY_AND_MOVE(Poller);
 
-  void UpdateChannel(Channel *ch);
-  void DeleteChannel(Channel *ch);
+  void UpdateChannel(Channel *ch) const;
+  void DeleteChannel(Channel *ch) const;
 
-  std::vector<Channel *> Poll(int timeout = -1);
+  std::vector<Channel *> Poll(int timeout = -1) const;
 
 private:
-  int fd_{1};
+  int fd_;
 
 #ifdef OS_LINUX
   struct epoll_event *events_{nullptr};

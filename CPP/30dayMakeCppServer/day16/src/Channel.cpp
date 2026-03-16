@@ -3,18 +3,18 @@
 #include <unistd.h>
 
 #include "EventLoop.h"
-#include "Socket.h"
 
-const int Channel::READ_EVENT = 1;
-const int Channel::WRITE_EVENT = 2;
-const int Channel::ET = 4;
+const short Channel::READ_EVENT = 1;
+const short Channel::WRITE_EVENT = 2;
+const short Channel::ET = 4;
 
-Channel::Channel(EventLoop *loop, Socket *socket)
-    : loop_(loop), socket_(socket) {}
+Channel::Channel(int fd, EventLoop *loop)
+    : fd_(fd), loop_(loop), listen_events_(0), ready_events_(0), exist_(false) {
+}
 
 Channel::~Channel() { loop_->DeleteChannel(this); }
 
-void Channel::HandleEvent() {
+void Channel::HandleEvent() const {
   // 处理读事件
   if (ready_events_ & READ_EVENT) {
     read_callback_();
@@ -36,16 +36,16 @@ void Channel::EnableWrite() {
   loop_->UpdateChannel(this);
 }
 
-void Channel::UseET() {
+void Channel::EnableET() {
   listen_events_ |= ET;
   loop_->UpdateChannel(this);
 }
 
-Socket *Channel::GetSocket() { return socket_; }
-uint32_t Channel::GetListenEvents() { return listen_events_; }
-uint32_t Channel::GetReadyEvents() { return ready_events_; }
+int Channel::GetFd() const { return fd_; }
+short Channel::GetListenEvents() const { return listen_events_; }
+short Channel::GetReadyEvents() const { return ready_events_; }
 
-bool Channel::GetExist() { return exist_; }
+bool Channel::IsExist() const { return exist_; }
 
 void Channel::SetExist(bool in) { exist_ = in; }
 

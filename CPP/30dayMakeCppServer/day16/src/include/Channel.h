@@ -1,6 +1,5 @@
 #pragma once
 #include "common.h"
-#include <cstdint>
 #include <functional>
 
 class Channel {
@@ -21,10 +20,10 @@ public:
   int GetFd() const;
 
   /// @brief 获取希望监听的事件
-  uint32_t GetListenEvents() const;
+  short GetListenEvents() const;
 
   /// @brief 获取实际就绪的事件
-  uint32_t GetReadyEvents() const;
+  short GetReadyEvents() const;
 
   bool IsExist() const;
 
@@ -41,16 +40,17 @@ public:
 
   void SetWriteCallback(std::function<void()> const &callback);
 
-  static const int READ_EVENT;  // NOLINT
-  static const int WRITE_EVENT; // NOLINT
-  static const int ET;          // NOLINT
+  static const short READ_EVENT;  // NOLINT
+  static const short WRITE_EVENT; // NOLINT
+  static const short ET;          // NOLINT
 
 private:
+  int fd_;
   EventLoop *loop_; // 关联的loop
-  Socket *socket_;
-  int listen_events_; // 期望监听的事件：用户希望在这个文件描述符上监听哪些事件
-  int ready_events_;  // 实际就绪的事件：内核返回的真正发生了的事件
-  bool exist_{false};
+  short
+      listen_events_; // 期望监听的事件：用户希望在这个文件描述符上监听哪些事件
+  short ready_events_; // 实际就绪的事件：内核返回的真正发生了的事件
+  bool exist_;
   std::function<void()> read_callback_;
   std::function<void()> write_callback_;
 };

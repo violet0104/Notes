@@ -12,7 +12,7 @@ public:
   /// @brief 新客户端连接
   RC AcceptConnection() const;
 
-  void set_new_connection_callback(std::function<void(int)> const &callback);
+  void SetNewConnectionCallback(std::function<void(int)> const &callback);
 
 private:
   std::unique_ptr<Socket> socket_;

@@ -1,5 +1,6 @@
 #pragma once
-#include <functional>
+#include "common.h"
+#include <memory>
 
 class Poller;
 class Channel;
@@ -13,9 +14,7 @@ public:
   void Loop();
   void UpdateChannel(Channel *ch);
   void DeleteChannel(Channel *ch);
-  void Quit();
 
 private:
-  Poller *poller_{nullptr};
-  bool quit_{false};
+  std::unique_ptr<Poller> poller_;
 };

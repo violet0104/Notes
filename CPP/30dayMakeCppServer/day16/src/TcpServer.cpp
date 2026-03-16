@@ -12,7 +12,7 @@ TcpServer::TcpServer() {
   acceptor_ = std::make_unique<Acceptor>(main_reactor_.get());
   std::function<void(int)> cb =
       std::bind(&TcpServer::NewConnection, this, std::placeholders::_1);
-  acceptor_->set_new_connection_callback(cb);
+  acceptor_->SetNewConnectionCallback(cb);
 
   unsigned int size = std::thread::hardware_concurrency();
   thread_pool_ = std::make_unique<ThreadPool>(size);
@@ -60,10 +60,10 @@ RC TcpServer::DeleteConnection(int fd) {
   return RC_SUCCESS;
 }
 
-void TcpServer::onConnect(std::function<void(Connection *)> fn) {
+void TcpServer::OnConnect(std::function<void(Connection *)> fn) {
   on_connect_ = std::move(fn);
 }
 
-void TcpServer::onRecv(std::function<void(Connection *)> fn) {
+void TcpServer::OnRecv(std::function<void(Connection *)> fn) {
   on_recv_ = std::move(fn);
 }

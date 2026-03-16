@@ -5,24 +5,19 @@
 #include "Channel.h"
 #include "Poller.h"
 
-EventLoop::EventLoop() { poller_ = new Poller(); }
+EventLoop::EventLoop() { poller_ = std::make_unique<Poller>(); }
 
-EventLoop::~EventLoop() {
-  Quit();
-  delete poller_;
-}
+EventLoop::~EventLoop() {}
 
 void EventLoop::Loop() {
-  while (!quit_) {
-    std::vector<Channel *> chs;
-    chs = poller_->Poll();
-    for (auto &ch : chs) {
-      ch->HandleEvent();
+  while (true) {
+    std::vector<Channel *> active_channels;
+    active_channels = poller_->Poll();
+    for (auto &active_channel : active_channels) {
+      active_channel->HandleEvent();
     }
   }
 }
-
-void EventLoop::Quit() { quit_ = true; }
 
 void EventLoop::UpdateChannel(Channel *ch) { poller_->UpdateChannel(ch); }
 void EventLoop::DeleteChannel(Channel *ch) { poller_->DeleteChannel(ch); }

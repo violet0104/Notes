@@ -1,4 +1,5 @@
 #pragma once
+#include "common.h"
 #include <condition_variable>
 #include <functional>
 #include <future>
@@ -28,7 +29,7 @@ private:
   std::queue<std::function<void()>> tasks_; // 任务队列
   std::mutex queue_mutex_; // 互斥锁：用于线程互斥访问任务的队列
   std::condition_variable
-      condition_variable_;        // 条件变量：实现工作线程的阻塞和唤醒
+      condition_variable_; // 条件变量：实现工作线程的阻塞和唤醒
   std::atomic<bool> stop_{false}; // 线程停止标志 // future
 };
 

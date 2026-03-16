@@ -4,7 +4,6 @@
 #include <unistd.h>
 
 #include "Channel.h"
-#include "Socket.h"
 #include "util.h"
 
 #define MAX_EVENTS_ 1000
@@ -25,7 +24,7 @@ Poller::~Poller() {
   delete[] events_;
 }
 
-std::vector<Channel *> Poller::Poll(int timeout) {
+std::vector<Channel *> Poller::Poll(int timeout) const {
   std::vector<Channel *> active_channels;
   int nfds = epoll_wait(fd_, events_, MAX_EVENTS_, timeout);
   ErrorIf(nfds == -1, "epoll wait error");
@@ -46,8 +45,8 @@ std::vector<Channel *> Poller::Poll(int timeout) {
   return active_channels;
 }
 
-void Poller::UpdateChannel(Channel *ch) {
-  int sockfd = ch->GetSocket()->GetFd();
+void Poller::UpdateChannel(Channel *ch) const {
+  int sockfd = ch->GetFd();
   struct epoll_event ev {};
   ev.data.ptr = ch;
   if (ch->GetListenEvents() & Channel::READ_EVENT) {
@@ -59,7 +58,7 @@ void Poller::UpdateChannel(Channel *ch) {
   if (ch->GetListenEvents() & Channel::ET) {
     ev.events |= EPOLLET;
   }
-  if (!ch->GetExist()) {
+  if (!ch->IsExist()) {
     ErrorIf(epoll_ctl(fd_, EPOLL_CTL_ADD, sockfd, &ev) == -1,
             "epoll add error");
     ch->SetExist();
@@ -69,8 +68,8 @@ void Poller::UpdateChannel(Channel *ch) {
   }
 }
 
-void Poller::DeleteChannel(Channel *ch) {
-  int sockfd = ch->GetSocket()->GetFd();
+void Poller::DeleteChannel(Channel *ch) const {
+  int sockfd = ch->GetFd();
   ErrorIf(epoll_ctl(fd_, EPOLL_CTL_DEL, sockfd, nullptr) == -1,
           "epoll delete error");
   ch->SetExist(false);
@@ -82,7 +81,7 @@ void Poller::DeleteChannel(Channel *ch) {
 
 Poller::Poller() {
   fd_ = kqueue();
-  ErrorIf(fd_ == -1, "kqueue create error");
+  assert(fd_ != -1);
   events_ = new struct kevent[MAX_EVENTS];
   memset(events_, 0, sizeof(*events_) * MAX_EVENTS);
 }
@@ -90,10 +89,11 @@ Poller::Poller() {
 Poller::~Poller() {
   if (fd_ != -1) {
     close(fd_);
+    fd_ = -1;
   }
 }
 
-std::vector<Channel *> Poller::Poll(int timeout) {
+std::vector<Channel *> Poller::Poll(long timeout) const {
   std::vector<Channel *> active_channels;
   struct timespec ts;
   memset(&ts, 0, sizeof(ts));
@@ -107,50 +107,59 @@ std::vector<Channel *> Poller::Poll(int timeout) {
   } else {
     nfds = kevent(fd_, NULL, 0, events_, MAX_EVENTS, &ts);
   }
+
   for (int i = 0; i < nfds; ++i) {
     Channel *ch = (Channel *)events_[i].udata;
     int events = events_[i].filter;
     if (events == EVFILT_READ) {
-      ch->SetReadyEvents(ch->READ_EVENT | ch->ET);
+      ch->set_ready_event(ch->READ_EVENT | ch->ET);
     }
     if (events == EVFILT_WRITE) {
-      ch->SetReadyEvents(ch->WRITE_EVENT | ch->ET);
+      ch->set_ready_event(ch->WRITE_EVENT | ch->ET);
     }
     active_channels.push_back(ch);
   }
   return active_channels;
 }
 
-void Poller::UpdateChannel(Channel *ch) {
+RC Poller::UpdateChannel(Channel *ch) const {
   struct kevent ev[2];
   memset(ev, 0, sizeof(*ev) * 2);
   int n = 0;
-  int fd = ch->GetSocket()->GetFd();
+  int fd = ch->fd();
   int op = EV_ADD;
-  if (ch->GetListenEvents() & ch->ET) {
+  if (ch->listen_events() & ch->ET) {
     op |= EV_CLEAR;
   }
-  if (ch->GetListenEvents() & ch->READ_EVENT) {
+  if (ch->listen_events() & ch->READ_EVENT) {
     EV_SET(&ev[n++], fd, EVFILT_READ, op, 0, 0, ch);
   }
-  if (ch->GetListenEvents() & ch->WRITE_EVENT) {
+  if (ch->listen_events() & ch->WRITE_EVENT) {
     EV_SET(&ev[n++], fd, EVFILT_WRITE, op, 0, 0, ch);
   }
   int r = kevent(fd_, ev, n, NULL, 0, NULL);
-  ErrorIf(r == -1, "kqueue add event error");
+  if (r == -1) {
+    perror("kqueue add event error");
+    return RC_POLLER_ERROR;
+  }
+  return RC_SUCCESS;
 }
 
-void Poller::DeleteChannel(Channel *ch) {
+RC Poller::DeleteChannel(Channel *ch) const {
   struct kevent ev[2];
   int n = 0;
-  int fd = ch->GetSocket()->GetFd();
-  if (ch->GetListenEvents() & ch->READ_EVENT) {
+  int fd = ch->fd();
+  if (ch->listen_events() & ch->READ_EVENT) {
     EV_SET(&ev[n++], fd, EVFILT_READ, EV_DELETE, 0, 0, ch);
   }
-  if (ch->GetListenEvents() & ch->WRITE_EVENT) {
+  if (ch->listen_events() & ch->WRITE_EVENT) {
     EV_SET(&ev[n++], fd, EVFILT_WRITE, EV_DELETE, 0, 0, ch);
   }
   int r = kevent(fd_, ev, n, NULL, 0, NULL);
-  ErrorIf(r == -1, "kqueue delete event error");
+  if (r == -1) {
+    perror("kqueue delete event error");
+    return RC_POLLER_ERROR;
+  }
+  return RC_SUCCESS;
 }
 #endif

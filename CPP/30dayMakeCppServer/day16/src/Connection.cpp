@@ -10,8 +10,9 @@
 
 Connection::Connection(int fd, EventLoop *loop) {
   socket_ = std::make_unique<Socket>();
+  socket_->SetFd(fd);
   if (loop != nullptr) {
-    channel_ = std::make_unique<Channel>(loop, fd);
+    channel_ = std::make_unique<Channel>(fd, loop);
     channel_->EnableRead();
     channel_->EnableET();
   }
