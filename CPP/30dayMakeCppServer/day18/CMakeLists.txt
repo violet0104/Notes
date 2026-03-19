@@ -106,9 +106,17 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # Includes.
-set(PINE_SRC_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/src/include)
 set(PINE_TEST_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/test/include)
-include_directories(${PINE_SRC_INCLUDE_DIR} ${PINE_TEST_INCLUDE_DIR})
+include_directories(
+    ${PROJECT_SOURCE_DIR}/src/common
+    ${PROJECT_SOURCE_DIR}/src/buffer
+    ${PROJECT_SOURCE_DIR}/src/net
+    ${PROJECT_SOURCE_DIR}/src/server
+    ${PROJECT_SOURCE_DIR}/src/threadpool
+    ${PROJECT_SOURCE_DIR}/src/http
+    ${PROJECT_SOURCE_DIR}/src/log
+    ${PINE_TEST_INCLUDE_DIR}
+)
 
 add_subdirectory(src)
 add_subdirectory(test)
