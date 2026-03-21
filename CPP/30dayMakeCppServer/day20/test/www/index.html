@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>欢迎来到 Pine Web Server</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+            padding: 50px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+        }
+
+        h1 {
+            color: #007bff;
+        }
+
+        p {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>运行成功！🎉</h1>
+        <p>恭喜，你已经成功实现了一个能返回真实 HTML 页面的 C++ Web 服务器！</p>
+        <p>这是在 <strong>Day 20</strong> 的学习里程碑，由 <code>HttpResponse</code> 提供支持。</p>
+
+        <hr style="margin: 30px 0; border: 0; border-top: 1px solid #ddd;">
+
+        <h3 style="color: #333;">测试 POST 请求</h3>
+        <p style="font-size: 0.9em; color: #555;">尝试提交此表单，密码默认为 123456</p>
+        <form action="/api/login" method="POST"
+            style="background:#f9f9f9; padding:20px; border-radius:8px; display: inline-block; text-align: left;">
+            <div style="margin-bottom: 10px;">
+                <label style="display:inline-block; width: 60px;">用户名：</label>
+                <input type="text" name="username" value="violet" required style="padding: 5px;">
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="display:inline-block; width: 60px;">密 码：</label>
+                <input type="password" name="password" required style="padding: 5px;">
+            </div>
+            <button type="submit"
+                style="padding:8px 20px; width: 100%; background:#007bff; color:white; border:none; border-radius:4px; font-size: 16px; cursor:pointer;">登录测试</button>
+        </form>
+    </div>
+</body>
+
+</html>
