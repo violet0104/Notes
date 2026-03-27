@@ -1,5 +1,4 @@
 #pragma once
-#include "Http.h"
 #include "Macros.h"
 #include <chrono>
 #include <functional>

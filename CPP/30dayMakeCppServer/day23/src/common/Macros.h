@@ -21,6 +21,8 @@ class Socket;
 class Buffer;
 class ThreadPool;
 class TimerManager;
+class Http;
+class HttpParser;
 
 // Macros to disable copying and moving
 #define DISALLOW_COPY(cname)                                                   \
