@@ -1,6 +1,7 @@
 #include "Http.h"
 #include "Buffer.h"
 #include "Connection.h"
+#include "Logger.h"
 #include "Macros.h"
 #include "TcpServer.h"
 #include <cstddef>
@@ -9,7 +10,6 @@
 #include <memory>
 #include <sstream>
 #include <string>
-#include "Logger.h"
 
 // ===================== HttpRequest 实现 =====================
 
@@ -486,7 +486,8 @@ void HttpServer::Start() {
       }
     }
   });
-  LOG_INFO("Http Server starts running! Please visit http://127.0.0.1:1234/ in your browser.");
+  LOG_INFO("Http Server starts running! Please visit http://127.0.0.1:1234/ in "
+           "your browser.");
   http_server_->Start();
 }
 
