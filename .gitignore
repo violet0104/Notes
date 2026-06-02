@@ -1,0 +1,78 @@
+# Build directories
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+
+# IDE
+.vscode/
+
+# Compiled object files and libraries
+*.o
+*.so
+*.a
+*.bin
+*.out
+*.exe
+*.dll
+*.dylib
+
+# Backup and temp files
+*~
+*.bak
+*.swp
+*.swo
+
+# Auto-generated agent files
+AGENTS.md
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Compiled executables — 30dayMakeCppServer (day01–day12)
+CPP/30dayMakeCppServer/day01/client
+CPP/30dayMakeCppServer/day01/server
+CPP/30dayMakeCppServer/day02/client
+CPP/30dayMakeCppServer/day02/server
+CPP/30dayMakeCppServer/day03/client
+CPP/30dayMakeCppServer/day03/server
+CPP/30dayMakeCppServer/day04/client
+CPP/30dayMakeCppServer/day04/server
+CPP/30dayMakeCppServer/day05/client
+CPP/30dayMakeCppServer/day05/server
+CPP/30dayMakeCppServer/day06/client
+CPP/30dayMakeCppServer/day06/server
+CPP/30dayMakeCppServer/day07/client
+CPP/30dayMakeCppServer/day07/server
+CPP/30dayMakeCppServer/day08/client
+CPP/30dayMakeCppServer/day08/server
+CPP/30dayMakeCppServer/day09/client
+CPP/30dayMakeCppServer/day09/server
+CPP/30dayMakeCppServer/day10/client
+CPP/30dayMakeCppServer/day10/server
+CPP/30dayMakeCppServer/day11/client
+CPP/30dayMakeCppServer/day11/server
+CPP/30dayMakeCppServer/day11/test
+CPP/30dayMakeCppServer/day11/ThreadPoolTest
+CPP/30dayMakeCppServer/day12/client
+CPP/30dayMakeCppServer/day12/server
+CPP/30dayMakeCppServer/day12/test
+CPP/30dayMakeCppServer/day12/ThreadPoolTest
+
+# Compiled executables — code/
+code/conversion_function/conversion_function_test
+code/perfect_forward2
+code/testdemo/test
+code/testdemo/test2
+code/testdemo/test3
+code/testdemo/test4
+
+# Compiled executables — ThreadPool
+CPP/ThreadPool/tests/test_thread_pool
