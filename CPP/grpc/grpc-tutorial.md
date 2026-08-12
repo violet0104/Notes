@@ -379,6 +379,8 @@ sudo apt install libgrpc++-dev protobuf-compiler-grpc
 
 不同 Linux 发行版、macOS 或手动源码安装环境，包名可能略有差异。
 
+这从内部调用 protocol buffer 编译器：
+
 ```shell
 $ protoc -I ../../protos/ --grpc_out=. --plugin=protoc-gen-grpc=grpc_cpp_plugin ../../protos/helloworld.proto
 $ protoc -I ../../protos/ --cpp_out=. ../../protos/helloworld.proto
