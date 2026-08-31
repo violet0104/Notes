@@ -4,9 +4,24 @@ build/
 # Python
 __pycache__/
 *.py[cod]
+.venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# ML data caches and downloads
+*.pkl
+AI/deep-learning-from-scratch/dataset/*.gz
 
 # IDE
 .vscode/
+.idea/
+
+# C/C++ tooling caches (clangd index)
+.cache/
 
 # Compiled object files and libraries
 *.o
